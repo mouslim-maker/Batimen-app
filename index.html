@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BATIMEN - Suivi des dépenses</title>
+<meta name="theme-color" content="#0d3b26">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Écran : configuration initiale (premier lancement) -->
+<div id="screen-setup" class="screen hidden">
+  <div class="setup-box">
+    <img src="logo.png" alt="BATIMEN" class="logo-slot logo-img">
+    <h1>BATIMEN</h1>
+    <p class="muted">Configuration de l'appareil</p>
+    <label>Adresse du connecteur (URL Apps Script)</label>
+    <input type="url" id="input-url" placeholder="https://script.google.com/macros/s/…/exec">
+    <button class="btn-primary" id="btn-save-url">Continuer</button>
+  </div>
+</div>
+
+<!-- Écran : connexion par code PIN -->
+<div id="screen-pin" class="screen hidden">
+  <div class="setup-box">
+    <img src="logo.png" alt="BATIMEN" class="logo-slot logo-img">
+    <h1>Bonjour</h1>
+    <p class="muted">Entre ton code PIN</p>
+    <input type="password" inputmode="numeric" maxlength="6" id="input-pin" placeholder="••••">
+    <button class="btn-primary" id="btn-login">Se connecter</button>
+    <p class="error" id="pin-error"></p>
+  </div>
+</div>
+
+<!-- App principale -->
+<div id="app" class="hidden">
+
+  <header class="topbar">
+    <img src="logo.png" alt="BATIMEN" class="topbar-logo">
+    <div class="topbar-title">
+      <div id="greeting">Bonjour</div>
+      <div class="sync-status" id="sync-status">●  Connecté</div>
+    </div>
+  </header>
+
+  <!-- ACCUEIL / TABLEAU DE BORD -->
+  <section id="page-accueil" class="page">
+    <h2>Tableau de bord</h2>
+    <div class="field">
+      <label>Marché</label>
+      <select id="select-marche"><option value="">Choisir un marché…</option></select>
+    </div>
+    <div class="field">
+      <label>Lot</label>
+      <select id="select-lot" disabled><option value="">Choisir d'abord un marché</option></select>
+    </div>
+
+    <div id="dashboard-box" class="dashboard-box hidden">
+      <div class="dashboard-header" id="dashboard-couleur">
+        <div class="dashboard-code" id="db-code"></div>
+        <div class="dashboard-intitule" id="db-intitule"></div>
+      </div>
+      <div class="dashboard-grid">
+        <div><span>Budget du lot</span><b id="db-budget"></b></div>
+        <div><span>Dépenses payées</span><b id="db-payees"></b></div>
+        <div><span>Commandes engagées</span><b id="db-engagees"></b></div>
+        <div><span>Total engagé</span><b id="db-total"></b></div>
+        <div><span>Budget restant</span><b id="db-restant"></b></div>
+        <div><span>% consommé</span><b id="db-pct"></b></div>
+      </div>
+    </div>
+
+    <button class="btn-scan" id="btn-goto-scan">📷 Scanner une dépense</button>
+  </section>
+
+  <!-- NOUVELLE DÉPENSE -->
+  <section id="page-depense" class="page hidden">
+    <h2>Nouvelle dépense</h2>
+    <form id="form-depense">
+      <div class="field"><label>Date</label><input type="date" id="f-date" required></div>
+      <div class="field"><label>Marché</label>
+        <select id="f-marche" required><option value="">Choisir…</option></select>
+      </div>
+      <div class="field"><label>Lot</label>
+        <select id="f-lot" required disabled><option value="">Choisir d'abord un marché</option></select>
+      </div>
+      <div class="field readonly-block hidden" id="f-recap">
+        <div><span>Chantier :</span> <b id="f-recap-chantier"></b></div>
+        <div><span>Budget du lot :</span> <b id="f-recap-budget"></b></div>
+      </div>
+      <div class="field"><label>Fournisseur</label><input type="text" id="f-fournisseur" required></div>
+      <div class="field"><label>N° facture / ticket</label><input type="text" id="f-numfacture"></div>
+      <div class="field"><label>Poste budgétaire</label>
+        <select id="f-poste" required disabled><option value="">Choisir d'abord un marché</option></select>
+      </div>
+      <div class="field"><label>Nature de l'achat</label><input type="text" id="f-nature" required></div>
+      <div class="field"><label>Montant TTC payé (€)</label><input type="number" step="0.01" min="0.01" id="f-montant" required></div>
+      <div class="field"><label>Statut</label>
+        <select id="f-statut" required>
+          <option value="Payée en magasin">Payée en magasin</option>
+          <option value="Commande engagée">Commande engagée</option>
+          <option value="À valider">À valider</option>
+        </select>
+      </div>
+      <div class="field"><label>Photo du ticket / facture</label>
+        <input type="file" accept="image/*" capture="environment" id="f-photo">
+        <img id="f-photo-preview" class="photo-preview hidden">
+      </div>
+
+      <div class="verif-box" id="verif-box">
+        <b>Vérification avant enregistrement</b>
+        <div><span>Marché :</span> <span id="v-marche">-</span></div>
+        <div><span>Lot :</span> <span id="v-lot">-</span></div>
+        <div><span>Chantier :</span> <span id="v-chantier">-</span></div>
+        <div><span>Budget :</span> <span id="v-budget">-</span></div>
+      </div>
+
+      <button type="submit" class="btn-primary">Enregistrer la dépense</button>
+      <p class="info" id="depense-msg"></p>
+    </form>
+  </section>
+
+  <!-- LISTE DES DÉPENSES -->
+  <section id="page-liste" class="page hidden">
+    <h2>Dépenses</h2>
+    <div id="liste-depenses"></div>
+  </section>
+
+  <!-- DÉPENSES NON AFFECTÉES (admin) -->
+  <section id="page-nonaffectees" class="page hidden">
+    <h2>Dépenses non affectées</h2>
+    <p class="muted">Marché reconnu, mais aucun lot renseigné.</p>
+    <div id="liste-nonaffectees"></div>
+  </section>
+
+  <!-- ADMINISTRATION -->
+  <section id="page-admin" class="page hidden">
+    <h2>Administration</h2>
+    <div class="field">
+      <label>Marché</label>
+      <select id="admin-select-marche"><option value="">Choisir un marché…</option></select>
+    </div>
+    <div class="field">
+      <label>Postes budgétaires du marché</label>
+      <ul id="admin-postes-liste"></ul>
+    </div>
+    <div class="field">
+      <label>Ajouter un poste</label>
+      <input type="text" id="admin-nouveau-poste" placeholder="Ex : PB19-Nouveau poste">
+      <button class="btn-secondary" id="btn-add-poste">Ajouter</button>
+    </div>
+    <p class="info" id="admin-msg"></p>
+  </section>
+
+  <!-- RÉGLAGES -->
+  <section id="page-reglages" class="page hidden">
+    <h2>Réglages</h2>
+    <div class="field"><label>Nom du technicien</label><input type="text" id="r-nom-technicien"></div>
+    <div class="field"><label>Adresse du connecteur</label><input type="url" id="r-url"></div>
+    <button class="btn-secondary" id="btn-save-reglages">Enregistrer</button>
+    <button class="btn-secondary" id="btn-sync-now">🔄 Synchroniser maintenant</button>
+    <p class="muted" id="last-sync"></p>
+    <button class="btn-danger" id="btn-logout">Se déconnecter / effacer les réglages</button>
+  </section>
+
+  <nav class="bottom-nav">
+    <button data-page="accueil" class="nav-btn active">🏠<span>Accueil</span></button>
+    <button data-page="depense" class="nav-btn">➕<span>Dépense</span></button>
+    <button data-page="liste" class="nav-btn">📋<span>Liste</span></button>
+    <button data-page="nonaffectees" class="nav-btn">⚠️<span>Non affect.</span></button>
+    <button data-page="admin" class="nav-btn">⚙️<span>Admin</span></button>
+    <button data-page="reglages" class="nav-btn">🔧<span>Réglages</span></button>
+  </nav>
+</div>
+
+<div id="update-banner" class="update-banner hidden">
+  Une nouvelle version est disponible.
+  <button id="btn-update">Mettre à jour</button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

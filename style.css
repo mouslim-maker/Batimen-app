@@ -1,0 +1,229 @@
+:root {
+  /* Couleurs de marque BATIMEN (chrome de l'app : barre, boutons, bordures) */
+  --vert-fonce: #17335b;   /* bleu marine du logo */
+  --vert-clair: #17335b;   /* alias marine, gardé pour compat avec le reste du CSS */
+  --blanc: #ffffff;
+  --dore: #ff9b39;         /* orange du logo */
+  --gris-fond: #f4f6f5;
+  --gris-texte: #5a6b63;
+
+  /* Couleurs de statut du tableau de bord (feu vert/orange/rouge — restent
+     des couleurs sémantiques classiques, indépendantes de la marque) */
+  --statut-ok: #3f9142;
+  --statut-alerte: #d98324;
+  --statut-danger: #c0392b;
+  --rouge: #c0392b;
+  --orange: #d98324;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--gris-fond);
+  color: #17241d;
+  padding-bottom: 70px;
+}
+.hidden { display: none !important; }
+
+/* Écrans plein écran (setup / pin) */
+.screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--vert-fonce);
+}
+.setup-box {
+  background: var(--blanc);
+  border-radius: 16px;
+  padding: 32px 24px;
+  width: 90%;
+  max-width: 360px;
+  text-align: center;
+}
+.setup-box h1 { color: var(--vert-fonce); margin: 8px 0 0; }
+.logo-slot {
+  width: 96px; height: 96px;
+  margin: 0 auto 12px;
+  border-radius: 12px;
+  display: block;
+}
+.logo-img { object-fit: contain; }
+.muted { color: var(--gris-texte); font-size: 14px; }
+.error { color: var(--rouge); font-size: 14px; min-height: 18px; }
+.info { color: var(--vert-clair); font-size: 14px; min-height: 18px; }
+
+input, select {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #d3d9d6;
+  border-radius: 8px;
+  font-size: 16px;
+}
+label { font-size: 13px; font-weight: 600; color: var(--vert-fonce); }
+
+.btn-primary {
+  width: 100%;
+  background: var(--vert-fonce);
+  color: var(--blanc);
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+.btn-secondary {
+  width: 100%;
+  background: var(--blanc);
+  border: 2px solid var(--vert-fonce);
+  color: var(--vert-fonce);
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+.btn-danger {
+  width: 100%;
+  background: var(--blanc);
+  border: 2px solid var(--rouge);
+  color: var(--rouge);
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  margin-top: 24px;
+}
+.btn-scan {
+  width: 100%;
+  background: var(--dore);
+  color: var(--vert-fonce);
+  border: none;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 700;
+  margin-top: 16px;
+}
+
+/* Barre supérieure */
+.topbar {
+  background: var(--vert-fonce);
+  color: var(--blanc);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+}
+.topbar-logo {
+  width: 40px; height: 40px;
+  border-radius: 6px;
+  object-fit: contain;
+  background: var(--blanc);
+  padding: 2px;
+}
+.topbar-title #greeting { font-weight: 700; }
+.sync-status { font-size: 12px; color: var(--vert-clair); }
+
+.page { padding: 16px; max-width: 480px; margin: 0 auto; }
+.page h2 { color: var(--vert-fonce); }
+
+.field { margin-bottom: 14px; }
+.readonly-block {
+  background: #eef4f0;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+}
+.readonly-block div { display: flex; justify-content: space-between; margin: 4px 0; }
+
+.dashboard-box {
+  border-radius: 14px;
+  overflow: hidden;
+  margin: 16px 0;
+  border: 1px solid #d3d9d6;
+}
+.dashboard-header {
+  padding: 14px;
+  color: var(--blanc);
+}
+.dashboard-header.vert { background: var(--statut-ok); }
+.dashboard-header.orange { background: var(--statut-alerte); }
+.dashboard-header.rouge { background: var(--statut-danger); }
+.dashboard-code { font-weight: 700; font-size: 15px; }
+.dashboard-intitule { font-size: 13px; opacity: .9; }
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: #e2e6e4;
+}
+.dashboard-grid > div {
+  background: var(--blanc);
+  padding: 10px 12px;
+}
+.dashboard-grid span { display: block; font-size: 11px; color: var(--gris-texte); }
+.dashboard-grid b { font-size: 15px; }
+
+.verif-box {
+  background: #fff8e8;
+  border: 1px solid var(--dore);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+  margin: 12px 0;
+}
+.verif-box div { display: flex; justify-content: space-between; margin: 3px 0; }
+
+.photo-preview { width: 100%; border-radius: 8px; margin-top: 8px; }
+
+#liste-depenses .depense-item, #liste-nonaffectees .depense-item {
+  background: var(--blanc);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 8px;
+  border-left: 4px solid var(--vert-clair);
+}
+.depense-item .top-row { display: flex; justify-content: space-between; font-weight: 600; }
+.depense-item .sub-row { font-size: 12px; color: var(--gris-texte); }
+.depense-item select { margin-top: 8px; }
+
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--blanc);
+  border-top: 1px solid #d3d9d6;
+  display: flex;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.nav-btn {
+  flex: 1;
+  background: none; border: none;
+  padding: 8px 2px;
+  display: flex; flex-direction: column; align-items: center;
+  font-size: 10px;
+  color: var(--gris-texte);
+}
+.nav-btn span { margin-top: 2px; }
+.nav-btn.active { color: var(--vert-fonce); font-weight: 700; }
+
+.update-banner {
+  position: fixed; top: 0; left: 0; right: 0;
+  background: var(--dore);
+  color: var(--vert-fonce);
+  padding: 10px 16px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 14px; font-weight: 600;
+  z-index: 999;
+}
+.update-banner button {
+  background: var(--vert-fonce); color: var(--blanc);
+  border: none; padding: 6px 12px; border-radius: 6px;
+}
+ul#admin-postes-liste { list-style: none; padding: 0; }
+ul#admin-postes-liste li {
+  background: var(--blanc);
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
