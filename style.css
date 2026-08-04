@@ -128,6 +128,20 @@ label { font-size: 13px; font-weight: 600; color: var(--vert-fonce); }
 
 .page { padding: 16px; max-width: 480px; margin: 0 auto; }
 .page h2 { color: var(--vert-fonce); }
+.page-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.btn-refresh {
+  background: var(--gris-fond);
+  border: 1px solid #d3d9d6;
+  color: var(--vert-fonce);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
 
 .field { margin-bottom: 14px; }
 .readonly-block {
