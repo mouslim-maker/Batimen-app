@@ -300,6 +300,27 @@ async function chargerListe() {
   }
 }
 
+/* ================= ACTUALISATION MANUELLE ================= */
+document.getElementById('btn-refresh-accueil').addEventListener('click', async () => {
+  const code = document.getElementById('select-marche').value;
+  const lot = document.getElementById('select-lot').value;
+  setSyncStatus('Synchronisation en cours…');
+  try {
+    if (code && lot) {
+      const db = await api('getTableauBord', { codeMarche: code, lot: lot });
+      afficherDashboard(db);
+    } else {
+      const marches = await api('getMarches');
+      remplirMarches(marches);
+    }
+    setSyncStatus('Connecté');
+  } catch (e) {
+    setSyncStatus('Erreur de synchronisation');
+  }
+});
+
+document.getElementById('btn-refresh-nonaffectees').addEventListener('click', chargerNonAffectees);
+
 /* ================= DÉPENSES NON AFFECTÉES ================= */
 async function chargerNonAffectees() {
   const el = document.getElementById('liste-nonaffectees');
