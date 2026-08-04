@@ -48,7 +48,10 @@
 
   <!-- ACCUEIL / TABLEAU DE BORD -->
   <section id="page-accueil" class="page">
-    <h2>Tableau de bord</h2>
+    <div class="page-header-row">
+      <h2>Tableau de bord</h2>
+      <button class="btn-refresh" id="btn-refresh-accueil">🔄 Actualiser</button>
+    </div>
     <div class="field">
       <label>Marché</label>
       <select id="select-marche"><option value="">Choisir un marché…</option></select>
@@ -131,7 +134,10 @@
 
   <!-- DÉPENSES NON AFFECTÉES (admin) -->
   <section id="page-nonaffectees" class="page hidden">
-    <h2>Dépenses non affectées</h2>
+    <div class="page-header-row">
+      <h2>Dépenses non affectées</h2>
+      <button class="btn-refresh" id="btn-refresh-nonaffectees">🔄 Actualiser</button>
+    </div>
     <p class="muted">Marché reconnu, mais aucun lot renseigné.</p>
     <div id="liste-nonaffectees"></div>
   </section>
